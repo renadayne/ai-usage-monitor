@@ -12,6 +12,8 @@ concurrency:
 jobs:
   check:
     runs-on: windows-latest
+    env:
+      CARGO_TERM_COLOR: never
     steps:
       - uses: actions/checkout@v4
 

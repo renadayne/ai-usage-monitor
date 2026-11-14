@@ -262,7 +262,7 @@ Luôn có nút "Refresh now" nhưng vẫn tôn trọng backoff.
 - **Xong khi**: command `debug_processes` trả về đúng các tool đang chạy trên máy.
 - **Commit**: `feat(core): cross-platform process and port detection`
 
-### [ ] Step 4 — Provider: Claude
+### [x] Step 4 — Provider: Claude
 
 - **Spike** `scripts/probe/claude.*`: đọc credentials, gọi usage endpoint 1 lần, lưu response redact vào `fixtures/claude/usage.json`; lấy 1 đoạn JSONL mẫu (redact nội dung hội thoại) vào `fixtures/claude/session.jsonl`.
 - Đọc credentials từ file `.credentials.json` (native hoặc WSL). Kiểm tra `expiresAt` → nếu hết hạn trả `AuthRequired`, **không refresh**.
@@ -362,6 +362,7 @@ _(Claude Code ghi vào đây sau mỗi step: ngày, step, khác biệt so với 
 - ⚠️ **Smart App Control đang bật (enforced) trên máy dev** → Windows chặn mọi file thực thi chưa ký do cargo build ra (build script, `cargo-clippy`, chính app). Hệ quả: trên máy này chỉ chạy được `cargo fmt`, lint/test/build frontend; `cargo clippy`, `cargo test`, `pnpm tauri dev` **chưa verify local**, phần Rust được kiểm tra bằng GitHub Actions CI.
 - **2026-11-14 — Step 2.** Thư mục vẫn là `src-tauri/src/core/` nhưng module Rust tên `engine` (tránh che crate `core` có sẵn). Thêm so với plan: `QuotaWindow.estimated`, `ProviderSnapshot.note`, `core/cmd.rs` (chạy lệnh con ẩn cửa sổ + timeout), bật/tắt provider trong scheduler. `NotInstalled` / `AuthRequired` không tính backoff (poll lại theo nhịp thường). History lưu theo từng window. App tạm chạy 4 `MockProvider`.
 - **2026-11-14 — Step 3.** Trên máy thật: Claude Code là `claude.exe` trong `...aude-code<version>`, trùng tên với app Claude desktop (Electron, `WindowsAppsClaude_*ppClaude.exe`) → tách thành 2 loại `ClaudeCode` / `ClaudeDesktop` dựa vào đường dẫn exe và cờ `--type=`. Codex là `codex.exe app-server` do app Codex desktop chạy. Quét 2 lượt (tên trước, cmdline chỉ cho ứng viên), cache 5 giây. `debug_processes` không trả command line (có thể chứa CSRF token). CI in lỗi clippy/test ra annotation (`scripts/ci/run-annotated.ps1`) vì máy dev không build Rust được.
+- **2026-11-14 — Step 4.** Máy dev **không có** `~/.claude/.credentials.json` (Claude Code ở đây do app Claude desktop chạy và tự giữ token) → usage endpoint **chưa verify thật**; `fixtures/claude/usage.json` là fixture tổng hợp theo shape đã công bố, `session.jsonl` là dữ liệu thật đã redact. Trên máy này Claude sẽ hiện `AuthRequired` + vẫn có Active/Model từ log. Log có dòng rất dài (~200 KB, `api-request-blob`) nên đọc ngược theo nấc 128 KB → 2 MB → 24 MB. Đã có phần đọc file statusline (`claude-statusline.json`) làm nguồn phụ khi thiếu token / 401 / 429, nhưng **chưa cài hook** (cần người dùng đồng ý). Thêm `core/http.rs`, `core/tail.rs`.
 
 ---
 

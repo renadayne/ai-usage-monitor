@@ -1,7 +1,9 @@
 pub mod cmd;
+pub mod http;
 pub mod model;
 pub mod paths;
 pub mod process;
 pub mod provider;
 pub mod scheduler;
 pub mod store;
+pub mod tail;

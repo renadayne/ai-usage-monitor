@@ -2,6 +2,7 @@
 //! and a slow quota fetch with exponential backoff. A failing provider never
 //! affects the others.
 
+use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex, RwLock};
 use std::time::Duration;
@@ -197,10 +198,10 @@ impl Scheduler {
             .collect();
         if let Some(store) = &store {
             for mut snapshot in store.load_latest().unwrap_or_default() {
-                if latest.contains_key(&snapshot.provider) {
+                if let Entry::Occupied(mut slot) = latest.entry(snapshot.provider) {
                     // Activity from a previous run says nothing about now.
                     snapshot.activity = super::model::Activity::Unknown;
-                    latest.insert(snapshot.provider, snapshot);
+                    slot.insert(snapshot);
                 }
             }
         }

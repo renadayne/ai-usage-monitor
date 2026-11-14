@@ -14,11 +14,13 @@ Write-Host "> $commandLine"
 # cmd merges stderr into stdout without PowerShell wrapping it in error records.
 $output = cmd /c "$commandLine 2>&1"
 $exitCode = $LASTEXITCODE
+$ansi = [regex]::Escape([string][char]27) + '[[0-9;]*m'
+$output = @($output | ForEach-Object { "$_" -replace $ansi, '' })
 $output | ForEach-Object { Write-Host $_ }
 
 if ($exitCode -ne 0) {
     $noise = '^\s*(Compiling|Checking|Downloading|Downloaded|Updating|Locking|Finished|Running|Blocking|Fresh|Adding)\b'
-    $lines = @($output | ForEach-Object { "$_" } | Where-Object { $_ -notmatch $noise })
+    $lines = @($output | Where-Object { $_ -notmatch $noise })
     $text = ($lines -join "`n")
     $maxTotal = 9 * 3500
     if ($text.Length -gt $maxTotal) { $text = $text.Substring($text.Length - $maxTotal) }
