@@ -231,7 +231,7 @@ Luôn có nút "Refresh now" nhưng vẫn tôn trọng backoff.
 - **Xong khi**: `git push` thành công, repo có trên GitHub.
 - **Commit**: `chore: init repository and planning doc`
 
-### [ ] Step 1 — Scaffold Tauri + tray
+### [x] Step 1 — Scaffold Tauri + tray
 
 - Scaffold Tauri 2 + React + TS + Vite + Tailwind (pnpm).
 - Tray icon với menu: Open Dashboard / Refresh / Quit. Đóng cửa sổ = ẩn xuống tray, không thoát.
@@ -358,6 +358,8 @@ _(Claude Code ghi vào đây sau mỗi step: ngày, step, khác biệt so với 
 
 - **2026-11-14 — Step 0.** Repo git local và remote `origin` (`renadayne/ai-usage-monitor`) đã có sẵn trước khi bắt đầu nên bỏ qua `git init` / `gh repo create`. Repo trên GitHub đang **public** (plan ghi `--private`).
 - Môi trường dev: có Node v24.14.0, Git 2.53, WebView2 Runtime. **Thiếu** Rust (rustc/cargo/rustup), Visual Studio Build Tools (C++), pnpm, GitHub CLI (`gh`) → phải cài trước Step 1.
+- **2026-11-14 — Step 1.** Đã cài Rust 1.100 (rustup), VS Build Tools 2022 (C++), pnpm 12 (qua `npm i -g`, vì `corepack enable` bị EPERM). `gh` chưa cài được (installer bị huỷ ở bước xin quyền admin) — không cần cho việc push. Scaffold viết tay thay vì `create-tauri-app`; TypeScript ghim ở 6.x vì `typescript-eslint` chưa hỗ trợ TS 7.
+- ⚠️ **Smart App Control đang bật (enforced) trên máy dev** → Windows chặn mọi file thực thi chưa ký do cargo build ra (build script, `cargo-clippy`, chính app). Hệ quả: trên máy này chỉ chạy được `cargo fmt`, lint/test/build frontend; `cargo clippy`, `cargo test`, `pnpm tauri dev` **chưa verify local**, phần Rust được kiểm tra bằng GitHub Actions CI.
 
 ---
 

@@ -1,0 +1,7 @@
+dist
+node_modules
+src-tauri
+fixtures
+coverage
+pnpm-lock.yaml
+PLANNING.md
