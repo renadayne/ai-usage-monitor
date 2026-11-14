@@ -50,8 +50,10 @@ jobs:
 
       - name: Rust clippy
         working-directory: src-tauri
-        run: cargo clippy --all-targets -- -D warnings
+        shell: pwsh
+        run: ../scripts/ci/run-annotated.ps1 clippy "cargo clippy --all-targets -- -D warnings"
 
       - name: Rust tests
         working-directory: src-tauri
-        run: cargo test
+        shell: pwsh
+        run: ../scripts/ci/run-annotated.ps1 tests "cargo test"

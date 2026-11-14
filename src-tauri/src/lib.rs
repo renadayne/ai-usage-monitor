@@ -14,6 +14,7 @@ use tauri::{AppHandle, Emitter, Listener, Manager, WindowEvent};
 
 use commands::AppState;
 use engine::model::{ProviderId, ProviderSnapshot};
+use engine::process::ProcessScanner;
 use engine::provider::Provider;
 use engine::scheduler::{Scheduler, SchedulerConfig, SnapshotSink};
 use engine::store::Store;
@@ -67,13 +68,17 @@ pub fn run() {
                 refresher.refresh(None);
             });
 
-            app.manage(AppState { scheduler });
+            app.manage(AppState {
+                scheduler,
+                processes: Arc::new(ProcessScanner::new()),
+            });
             tray::create(&handle)?;
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
             commands::get_snapshots,
-            commands::refresh
+            commands::refresh,
+            commands::debug_processes
         ])
         .on_window_event(|window, event| {
             // Closing the dashboard hides it to the tray instead of quitting.

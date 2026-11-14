@@ -251,7 +251,7 @@ Luôn có nút "Refresh now" nhưng vẫn tôn trọng backoff.
 - **Xong khi**: UI tạm hiển thị JSON snapshot từ MockProvider cập nhật theo thời gian; test pass.
 - **Commit**: `feat(core): provider trait, scheduler, sqlite store`
 
-### [ ] Step 3 — Dò process
+### [x] Step 3 — Dò process
 
 - `core/process.rs` dùng crate `sysinfo`: tìm process theo tên + pattern command line, trả về pid, cmdline, thời điểm start.
 - Bảng pattern cho: Claude Code (`claude.exe` / `node.exe` + cmdline), Codex (`codex.exe`), Antigravity (`Antigravity.exe` + `language_server*.exe`), editor có Copilot (`Code.exe`, `Code - Insiders.exe`, JetBrains…). So khớp tên không phân biệt hoa thường.
@@ -361,6 +361,7 @@ _(Claude Code ghi vào đây sau mỗi step: ngày, step, khác biệt so với 
 - **2026-11-14 — Step 1.** Đã cài Rust 1.100 (rustup), VS Build Tools 2022 (C++), pnpm 12 (qua `npm i -g`, vì `corepack enable` bị EPERM). `gh` chưa cài được (installer bị huỷ ở bước xin quyền admin) — không cần cho việc push. Scaffold viết tay thay vì `create-tauri-app`; TypeScript ghim ở 6.x vì `typescript-eslint` chưa hỗ trợ TS 7.
 - ⚠️ **Smart App Control đang bật (enforced) trên máy dev** → Windows chặn mọi file thực thi chưa ký do cargo build ra (build script, `cargo-clippy`, chính app). Hệ quả: trên máy này chỉ chạy được `cargo fmt`, lint/test/build frontend; `cargo clippy`, `cargo test`, `pnpm tauri dev` **chưa verify local**, phần Rust được kiểm tra bằng GitHub Actions CI.
 - **2026-11-14 — Step 2.** Thư mục vẫn là `src-tauri/src/core/` nhưng module Rust tên `engine` (tránh che crate `core` có sẵn). Thêm so với plan: `QuotaWindow.estimated`, `ProviderSnapshot.note`, `core/cmd.rs` (chạy lệnh con ẩn cửa sổ + timeout), bật/tắt provider trong scheduler. `NotInstalled` / `AuthRequired` không tính backoff (poll lại theo nhịp thường). History lưu theo từng window. App tạm chạy 4 `MockProvider`.
+- **2026-11-14 — Step 3.** Trên máy thật: Claude Code là `claude.exe` trong `...aude-code<version>`, trùng tên với app Claude desktop (Electron, `WindowsAppsClaude_*ppClaude.exe`) → tách thành 2 loại `ClaudeCode` / `ClaudeDesktop` dựa vào đường dẫn exe và cờ `--type=`. Codex là `codex.exe app-server` do app Codex desktop chạy. Quét 2 lượt (tên trước, cmdline chỉ cho ứng viên), cache 5 giây. `debug_processes` không trả command line (có thể chứa CSRF token). CI in lỗi clippy/test ra annotation (`scripts/ci/run-annotated.ps1`) vì máy dev không build Rust được.
 
 ---
 
