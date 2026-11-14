@@ -273,7 +273,7 @@ Luôn có nút "Refresh now" nhưng vẫn tôn trọng backoff.
 - **Xong khi**: snapshot Claude khớp với số trong `/usage` của Claude Code.
 - **Commit**: `feat(provider): claude usage, activity and model detection`
 
-### [ ] Step 5 — Provider: Codex
+### [x] Step 5 — Provider: Codex
 
 - **Spike**: xác định định dạng rollout thật (`.jsonl` hay `.jsonl.zst`), lưu mẫu `token_count` + `turn_context` đã redact; gọi thử `wham/usage` và lưu response redact.
 - Parser rollout: tìm file mới nhất, đọc ngược lấy event `token_count` cuối cùng có `rate_limits` → `primary` (5h), `secondary` (tuần), `plan_type`; lấy model từ `turn_context` gần nhất. Hỗ trợ zstd nếu spike cho thấy cần.
@@ -363,6 +363,7 @@ _(Claude Code ghi vào đây sau mỗi step: ngày, step, khác biệt so với 
 - **2026-11-14 — Step 2.** Thư mục vẫn là `src-tauri/src/core/` nhưng module Rust tên `engine` (tránh che crate `core` có sẵn). Thêm so với plan: `QuotaWindow.estimated`, `ProviderSnapshot.note`, `core/cmd.rs` (chạy lệnh con ẩn cửa sổ + timeout), bật/tắt provider trong scheduler. `NotInstalled` / `AuthRequired` không tính backoff (poll lại theo nhịp thường). History lưu theo từng window. App tạm chạy 4 `MockProvider`.
 - **2026-11-14 — Step 3.** Trên máy thật: Claude Code là `claude.exe` trong `...aude-code<version>`, trùng tên với app Claude desktop (Electron, `WindowsAppsClaude_*ppClaude.exe`) → tách thành 2 loại `ClaudeCode` / `ClaudeDesktop` dựa vào đường dẫn exe và cờ `--type=`. Codex là `codex.exe app-server` do app Codex desktop chạy. Quét 2 lượt (tên trước, cmdline chỉ cho ứng viên), cache 5 giây. `debug_processes` không trả command line (có thể chứa CSRF token). CI in lỗi clippy/test ra annotation (`scripts/ci/run-annotated.ps1`) vì máy dev không build Rust được.
 - **2026-11-14 — Step 4.** Máy dev **không có** `~/.claude/.credentials.json` (Claude Code ở đây do app Claude desktop chạy và tự giữ token) → usage endpoint **chưa verify thật**; `fixtures/claude/usage.json` là fixture tổng hợp theo shape đã công bố, `session.jsonl` là dữ liệu thật đã redact. Trên máy này Claude sẽ hiện `AuthRequired` + vẫn có Active/Model từ log. Log có dòng rất dài (~200 KB, `api-request-blob`) nên đọc ngược theo nấc 128 KB → 2 MB → 24 MB. Đã có phần đọc file statusline (`claude-statusline.json`) làm nguồn phụ khi thiếu token / 401 / 429, nhưng **chưa cài hook** (cần người dùng đồng ý). Thêm `core/http.rs`, `core/tail.rs`.
+- **2026-11-14 — Step 5.** Thực tế trên máy (app Codex desktop 26.1111): **cả 60 rollout đều là `.jsonl.zst`**, file mới nhất nặng 232 MB và đã 8 ngày không ghi; thread hiện tại nằm trong SQLite (`thread_history_1.sqlite`, `state_5.sqlite`). App **không mở SQLite của Codex** (mở read-only vẫn làm đổi `-shm`/`-wal`). `wham/usage` gọi được thật (HTTP 200, plan `plus`) → fixture thật đã redact; shape: `rate_limit.primary_window/secondary_window {used_percent, limit_window_seconds, reset_at}`. Rollout: `rate_limits.primary/secondary {used_percent, window_minutes, resets_at}` + `plan_type`, model ở `turn_context.payload.model`. Hỗ trợ zstd bằng `ruzstd` (chỉ giải nén file ≤ 16 MB, nhiều frame nối nhau). Nhịp: đọc log local 60 giây, gọi live 5 phút; model fallback lấy `model` trong `config.toml`. `chatgpt_base_url` lạ (không phải host OpenAI/https) → không gửi token, chỉ dùng log local. Chưa so được với `/status` vì không build/chạy app local được.
 
 ---
 

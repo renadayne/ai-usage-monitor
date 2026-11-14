@@ -21,6 +21,7 @@ use engine::provider::Provider;
 use engine::scheduler::{Scheduler, SchedulerConfig, SnapshotSink};
 use engine::store::Store;
 use providers::claude::ClaudeProvider;
+use providers::codex::CodexProvider;
 use providers::mock::MockProvider;
 use providers::ProviderContext;
 
@@ -52,7 +53,10 @@ fn build_providers(ctx: &ProviderContext) -> Vec<Arc<dyn Provider>> {
             .map(|id| Arc::new(MockProvider::new(id, Duration::from_secs(15))) as Arc<dyn Provider>)
             .collect();
     }
-    vec![Arc::new(ClaudeProvider::new(ctx.clone()))]
+    vec![
+        Arc::new(ClaudeProvider::new(ctx.clone())),
+        Arc::new(CodexProvider::new(ctx.clone())),
+    ]
 }
 
 pub fn run() {
