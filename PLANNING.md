@@ -240,7 +240,7 @@ Luôn có nút "Refresh now" nhưng vẫn tôn trọng backoff.
 - **Xong khi**: `pnpm tauri dev` mở được cửa sổ trống + tray icon; CI xanh.
 - **Commit**: `feat: scaffold tauri app with tray and CI`
 
-### [ ] Step 2 — Core: model, trait, scheduler, store
+### [x] Step 2 — Core: model, trait, scheduler, store
 
 - Cài đặt `core/model.rs`, `core/provider.rs` đúng như mục 4.
 - `core/paths.rs`: resolve thư mục config của từng tool theo thứ tự ở mục "Lưu ý riêng cho Windows: WSL" (env override → `%USERPROFILE%` → WSL). Kết quả dò WSL phải được cache (gọi `wsl.exe` chậm) và không được làm treo app nếu WSL không cài.
@@ -360,6 +360,7 @@ _(Claude Code ghi vào đây sau mỗi step: ngày, step, khác biệt so với 
 - Môi trường dev: có Node v24.14.0, Git 2.53, WebView2 Runtime. **Thiếu** Rust (rustc/cargo/rustup), Visual Studio Build Tools (C++), pnpm, GitHub CLI (`gh`) → phải cài trước Step 1.
 - **2026-11-14 — Step 1.** Đã cài Rust 1.100 (rustup), VS Build Tools 2022 (C++), pnpm 12 (qua `npm i -g`, vì `corepack enable` bị EPERM). `gh` chưa cài được (installer bị huỷ ở bước xin quyền admin) — không cần cho việc push. Scaffold viết tay thay vì `create-tauri-app`; TypeScript ghim ở 6.x vì `typescript-eslint` chưa hỗ trợ TS 7.
 - ⚠️ **Smart App Control đang bật (enforced) trên máy dev** → Windows chặn mọi file thực thi chưa ký do cargo build ra (build script, `cargo-clippy`, chính app). Hệ quả: trên máy này chỉ chạy được `cargo fmt`, lint/test/build frontend; `cargo clippy`, `cargo test`, `pnpm tauri dev` **chưa verify local**, phần Rust được kiểm tra bằng GitHub Actions CI.
+- **2026-11-14 — Step 2.** Thư mục vẫn là `src-tauri/src/core/` nhưng module Rust tên `engine` (tránh che crate `core` có sẵn). Thêm so với plan: `QuotaWindow.estimated`, `ProviderSnapshot.note`, `core/cmd.rs` (chạy lệnh con ẩn cửa sổ + timeout), bật/tắt provider trong scheduler. `NotInstalled` / `AuthRequired` không tính backoff (poll lại theo nhịp thường). History lưu theo từng window. App tạm chạy 4 `MockProvider`.
 
 ---
 
