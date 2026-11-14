@@ -1,0 +1,43 @@
+{
+  "access_type_sku": "monthly_subscriber_quota",
+  "analytics_tracking_id": "[redacted]",
+  "assigned_date": "2025-03-02T10:00:00+00:00",
+  "can_signup_for_limited": false,
+  "chat_enabled": true,
+  "copilot_plan": "individual_pro",
+  "organization_login_list": [],
+  "organization_list": [],
+  "quota_reset_date": "2026-12-01",
+  "quota_snapshots": {
+    "chat": {
+      "entitlement": 0,
+      "overage_count": 0,
+      "overage_permitted": false,
+      "percent_remaining": 100.0,
+      "quota_id": "chat",
+      "quota_remaining": 0.0,
+      "remaining": 0,
+      "unlimited": true
+    },
+    "completions": {
+      "entitlement": 0,
+      "overage_count": 0,
+      "overage_permitted": false,
+      "percent_remaining": 100.0,
+      "quota_id": "completions",
+      "quota_remaining": 0.0,
+      "remaining": 0,
+      "unlimited": true
+    },
+    "premium_interactions": {
+      "entitlement": 300,
+      "overage_count": 0,
+      "overage_permitted": true,
+      "percent_remaining": 61.3,
+      "quota_id": "premium_interactions",
+      "quota_remaining": 183.9,
+      "remaining": 183,
+      "unlimited": false
+    }
+  }
+}

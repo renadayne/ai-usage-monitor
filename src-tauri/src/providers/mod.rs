@@ -1,5 +1,6 @@
 pub mod claude;
 pub mod codex;
+pub mod copilot;
 pub mod mock;
 
 use std::path::PathBuf;

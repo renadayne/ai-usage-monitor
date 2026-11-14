@@ -1,0 +1,34 @@
+{
+  "access_type_sku": "monthly_subscriber_quota",
+  "analytics_tracking_id": "[redacted]",
+  "chat_enabled": true,
+  "copilot_plan": "individual_pro",
+  "quota_reset_date": "2026-12-01",
+  "quota_reset_date_utc": "2026-12-01T00:00:00.000Z",
+  "quota_snapshots": {
+    "chat": {
+      "entitlement": 0,
+      "percent_remaining": 100.0,
+      "quota_id": "chat",
+      "remaining": 0,
+      "unlimited": true
+    },
+    "completions": {
+      "entitlement": 0,
+      "percent_remaining": 100.0,
+      "quota_id": "completions",
+      "remaining": 0,
+      "unlimited": true
+    },
+    "ai_credits": {
+      "entitlement": 1000,
+      "overage_count": 0,
+      "overage_permitted": false,
+      "percent_remaining": 42.5,
+      "quota_id": "ai_credits",
+      "quota_remaining": 425.0,
+      "remaining": 425,
+      "unlimited": false
+    }
+  }
+}

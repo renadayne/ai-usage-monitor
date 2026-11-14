@@ -22,6 +22,7 @@ use engine::scheduler::{Scheduler, SchedulerConfig, SnapshotSink};
 use engine::store::Store;
 use providers::claude::ClaudeProvider;
 use providers::codex::CodexProvider;
+use providers::copilot::{CopilotProvider, SharedToken};
 use providers::mock::MockProvider;
 use providers::ProviderContext;
 
@@ -45,7 +46,7 @@ fn data_dir(app: &AppHandle) -> PathBuf {
         .unwrap_or_else(std::env::temp_dir)
 }
 
-fn build_providers(ctx: &ProviderContext) -> Vec<Arc<dyn Provider>> {
+fn build_providers(ctx: &ProviderContext, copilot_token: SharedToken) -> Vec<Arc<dyn Provider>> {
     // `AIUM_MOCK=1` runs the UI against fake data.
     if std::env::var_os("AIUM_MOCK").is_some() {
         return ProviderId::ALL
@@ -56,6 +57,7 @@ fn build_providers(ctx: &ProviderContext) -> Vec<Arc<dyn Provider>> {
     vec![
         Arc::new(ClaudeProvider::new(ctx.clone())),
         Arc::new(CodexProvider::new(ctx.clone())),
+        Arc::new(CopilotProvider::new(ctx.clone(), copilot_token)),
     ]
 }
 
@@ -74,7 +76,7 @@ pub fn run() {
                 data_dir,
             };
             let scheduler = Arc::new(Scheduler::new(
-                build_providers(&ctx),
+                build_providers(&ctx, SharedToken::default()),
                 SchedulerConfig::default(),
                 store,
                 Arc::new(TauriSink(handle.clone())),
