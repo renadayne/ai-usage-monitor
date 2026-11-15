@@ -2,6 +2,7 @@ import { ActivityDot, healthLabel } from "./components/status";
 import { refresh, showDashboard } from "./lib/api";
 import { formatPercent, severity, tightestWindow, type Severity } from "./lib/format";
 import { PROVIDER_NAMES, type ProviderSnapshot } from "./lib/types";
+import { useSettings } from "./lib/useSettings";
 import { useSnapshots } from "./lib/useSnapshots";
 
 const PERCENT_COLOR: Record<Severity, string> = {
@@ -35,7 +36,11 @@ export function PopupRow({ snapshot }: { snapshot: ProviderSnapshot }) {
 }
 
 export default function Popup() {
-  const { snapshots } = useSnapshots();
+  const { snapshots: all } = useSnapshots();
+  const [settings] = useSettings();
+  const snapshots = all.filter(
+    (snapshot) => settings?.providers[snapshot.provider]?.enabled ?? true,
+  );
 
   return (
     <main className="flex h-screen flex-col overflow-hidden border border-slate-300 bg-white text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100">

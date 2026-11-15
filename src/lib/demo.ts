@@ -1,4 +1,4 @@
-import type { ProviderSnapshot, QuotaWindow } from "./types";
+import type { HistoryPoint, ProviderId, ProviderSnapshot, QuotaWindow, Settings } from "./types";
 
 // Sample data covering every card state. Used by tests and by `pnpm dev`
 // when the page is opened in a plain browser (no Tauri backend).
@@ -88,4 +88,45 @@ export function demoSnapshots(): ProviderSnapshot[] {
       fetched_at: iso(0),
     },
   ];
+}
+
+export function demoSettings(): Settings {
+  return {
+    providers: {
+      claude: { enabled: true, poll_interval_secs: null },
+      codex: { enabled: true, poll_interval_secs: null },
+      antigravity: { enabled: true, poll_interval_secs: 120 },
+      copilot: { enabled: true, poll_interval_secs: null },
+    },
+    notifications_enabled: true,
+    warn_threshold: 80,
+    critical_threshold: 95,
+    autostart: false,
+    claude_dir: null,
+    codex_dir: null,
+  };
+}
+
+/** A sawtooth 5-hour window and a slowly climbing weekly window. */
+export function demoHistory(provider: ProviderId, days: number): HistoryPoint[] {
+  if (provider === "copilot") return [];
+  const points: HistoryPoint[] = [];
+  const now = Date.now();
+  const steps = days * 12;
+  for (let step = 0; step <= steps; step++) {
+    const recorded_at = new Date(now - (steps - step) * 2 * HOUR).toISOString();
+    points.push({
+      window_id: "five_hour",
+      label: "5 hours",
+      used_percent: ((step * 17) % 60) + (step % 3) * 5,
+      recorded_at,
+    });
+    points.push({
+      window_id: "weekly",
+      label: "Weekly",
+      used_percent: Math.min(95, (step / steps) * 90),
+      recorded_at,
+    });
+  }
+  return points;
 }

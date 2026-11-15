@@ -1,8 +1,8 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import App from "./App";
 import * as api from "./lib/api";
-import { demoSnapshots } from "./lib/demo";
+import { demoSettings, demoSnapshots } from "./lib/demo";
 import { mergeSnapshot } from "./lib/useSnapshots";
 
 const windowLabel = vi.hoisted(() => ({ value: "main" }));
@@ -18,6 +18,12 @@ vi.mock("./lib/api", async () => {
     onSnapshotUpdated: vi.fn(() => Promise.resolve(() => {})),
     refresh: vi.fn(() => Promise.resolve()),
     showDashboard: vi.fn(() => Promise.resolve()),
+    getSettings: vi.fn(() => import("./lib/demo").then((demo) => demo.demoSettings())),
+    onSettingsChanged: vi.fn(() => Promise.resolve(() => {})),
+    getHistory: vi.fn(() => Promise.resolve([])),
+    saveSettings: vi.fn((settings: unknown) => Promise.resolve(settings)),
+    copilotStatus: vi.fn(() => Promise.resolve({ connected: false })),
+    onCopilotAuth: vi.fn(() => Promise.resolve(() => {})),
   };
 });
 
@@ -43,6 +49,27 @@ describe("App", () => {
     expect(api.refresh).toHaveBeenLastCalledWith();
     fireEvent.click(screen.getByRole("button", { name: "Refresh Codex" }));
     expect(api.refresh).toHaveBeenLastCalledWith("codex");
+  });
+
+  it("switches between overview, history and settings", async () => {
+    render(<App />);
+    await screen.findByRole("region", { name: "Claude" });
+    fireEvent.click(screen.getByRole("button", { name: "History" }));
+    expect(await screen.findByRole("region", { name: "Claude history" })).toBeInTheDocument();
+    expect(api.getHistory).toHaveBeenCalledWith("claude", 7);
+    fireEvent.click(screen.getByRole("button", { name: "Settings" }));
+    expect(await screen.findByRole("button", { name: "Save settings" })).toBeInTheDocument();
+  });
+
+  it("hides providers that are turned off", async () => {
+    const settings = demoSettings();
+    settings.providers.codex.enabled = false;
+    vi.mocked(api.getSettings).mockResolvedValueOnce(settings);
+    render(<App />);
+    await screen.findByRole("region", { name: "Claude" });
+    await waitFor(() =>
+      expect(screen.queryByRole("region", { name: "Codex" })).not.toBeInTheDocument(),
+    );
   });
 
   it("renders the compact popup in the popup window", async () => {

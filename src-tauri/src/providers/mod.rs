@@ -2,6 +2,7 @@ pub mod antigravity;
 pub mod claude;
 pub mod codex;
 pub mod copilot;
+pub mod copilot_auth;
 pub mod mock;
 
 use std::path::PathBuf;

@@ -10,6 +10,8 @@ vi.mock("../lib/api", () => ({
   onSnapshotUpdated: vi.fn(() => Promise.resolve(() => {})),
   refresh: vi.fn(() => Promise.resolve()),
   showDashboard: vi.fn(() => Promise.resolve()),
+  getSettings: vi.fn(() => new Promise(() => {})),
+  onSettingsChanged: vi.fn(() => Promise.resolve(() => {})),
 }));
 
 const NOW = Date.now();
