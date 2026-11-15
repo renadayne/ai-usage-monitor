@@ -4,11 +4,12 @@ use std::sync::Arc;
 
 use chrono::{DateTime, Utc};
 use serde::Serialize;
-use tauri::State;
+use tauri::{AppHandle, State};
 
 use crate::engine::model::{ProviderId, ProviderSnapshot};
 use crate::engine::process::{listening_sockets, ports_of, ProcessScanner, ToolKind};
 use crate::engine::scheduler::Scheduler;
+use crate::tray;
 
 pub struct AppState {
     pub scheduler: Arc<Scheduler>,
@@ -23,6 +24,13 @@ pub fn get_snapshots(state: State<'_, AppState>) -> Vec<ProviderSnapshot> {
 #[tauri::command]
 pub fn refresh(state: State<'_, AppState>, provider: Option<ProviderId>) {
     state.scheduler.refresh(provider);
+}
+
+/// Opens the dashboard (used by the tray popup).
+#[tauri::command]
+pub fn show_dashboard(app: AppHandle) {
+    tray::hide_popup(&app);
+    tray::show_dashboard(&app);
 }
 
 /// What the UI may see of a process. The command line is deliberately left

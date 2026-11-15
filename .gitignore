@@ -37,3 +37,6 @@ Desktop.ini
 # Logs / coverage
 *.log
 coverage/
+
+# Local Claude Code session config
+.claude/

@@ -31,6 +31,14 @@ impl ProviderId {
         Self::ALL.into_iter().find(|id| id.as_str() == value)
     }
 
+    /// Compact name for tight spots such as the tray tooltip.
+    pub fn short_name(self) -> &'static str {
+        match self {
+            ProviderId::Copilot => "Copilot",
+            other => other.display_name(),
+        }
+    }
+
     pub fn display_name(self) -> &'static str {
         match self {
             ProviderId::Claude => "Claude",

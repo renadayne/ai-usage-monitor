@@ -35,6 +35,9 @@ struct TauriSink(AppHandle);
 impl SnapshotSink for TauriSink {
     fn publish(&self, snapshot: &ProviderSnapshot) {
         let _ = self.0.emit(EVENT_SNAPSHOT_UPDATED, snapshot);
+        if let Some(state) = self.0.try_state::<AppState>() {
+            tray::update_tooltip(&self.0, &state.scheduler.snapshots());
+        }
     }
 }
 
@@ -100,20 +103,27 @@ pub fn run() {
                 processes: Arc::clone(&ctx.processes),
             });
             tray::create(&handle)?;
+            tray::create_popup(&handle)?;
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
             commands::get_snapshots,
             commands::refresh,
-            commands::debug_processes
+            commands::debug_processes,
+            commands::show_dashboard
         ])
         .on_window_event(|window, event| {
             // Closing the dashboard hides it to the tray instead of quitting.
-            if window.label() == MAIN_WINDOW {
-                if let WindowEvent::CloseRequested { api, .. } = event {
+            match (window.label(), event) {
+                (MAIN_WINDOW, WindowEvent::CloseRequested { api, .. }) => {
                     api.prevent_close();
                     let _ = window.hide();
                 }
+                // The tray popup hides itself as soon as it loses focus.
+                (tray::POPUP_WINDOW, WindowEvent::Focused(false)) => {
+                    tray::hide_popup(window.app_handle());
+                }
+                _ => {}
             }
         })
         .run(tauri::generate_context!())
