@@ -20,6 +20,7 @@ use engine::process::ProcessScanner;
 use engine::provider::Provider;
 use engine::scheduler::{Scheduler, SchedulerConfig, SnapshotSink};
 use engine::store::Store;
+use providers::antigravity::AntigravityProvider;
 use providers::claude::ClaudeProvider;
 use providers::codex::CodexProvider;
 use providers::copilot::{CopilotProvider, SharedToken};
@@ -57,6 +58,7 @@ fn build_providers(ctx: &ProviderContext, copilot_token: SharedToken) -> Vec<Arc
     vec![
         Arc::new(ClaudeProvider::new(ctx.clone())),
         Arc::new(CodexProvider::new(ctx.clone())),
+        Arc::new(AntigravityProvider::new(ctx.clone())),
         Arc::new(CopilotProvider::new(ctx.clone(), copilot_token)),
     ]
 }

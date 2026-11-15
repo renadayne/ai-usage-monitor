@@ -37,8 +37,9 @@ pub struct QuotaInfo {
     pub note: Option<String>,
     /// Overrides `Health::Ok`, e.g. `Stale` when serving a cached snapshot.
     pub health: Option<Health>,
-    /// When true and `windows` is empty, keep the windows already shown.
-    pub keep_previous_windows: bool,
+    /// The source is unavailable right now (app closed): keep showing the last
+    /// snapshot and mark it stale instead of replacing it.
+    pub stale: bool,
 }
 
 #[derive(Debug, Clone, PartialEq)]

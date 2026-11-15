@@ -1,0 +1,341 @@
+{
+  "userStatus": {
+    "disableTelemetry": true,
+    "name": "[redacted]",
+    "email": "[redacted]",
+    "planStatus": {
+      "planInfo": {
+        "teamsTier": "TEAMS_TIER_PRO",
+        "planName": "Pro",
+        "hasAutocompleteFastMode": true,
+        "allowStickyPremiumModels": true,
+        "allowPremiumCommandModels": true,
+        "hasTabToJump": true,
+        "maxNumPremiumChatMessages": "-1",
+        "maxNumChatInputTokens": "[redacted]",
+        "maxCustomChatInstructionCharacters": "600",
+        "maxNumPinnedContextItems": "-1",
+        "maxLocalIndexSize": "-1",
+        "monthlyPromptCredits": 50000,
+        "monthlyFlowCredits": 150000,
+        "monthlyFlexCreditPurchaseAmount": 25000,
+        "canBuyMoreCredits": true,
+        "cascadeWebSearchEnabled": true,
+        "canCustomizeAppIcon": true,
+        "cascadeCanAutoRunCommands": true,
+        "canGenerateCommitMessages": true,
+        "knowledgeBaseEnabled": true,
+        "defaultTeamConfig": {
+          "allowMcpServers": true,
+          "allowAutoRunCommands": true,
+          "allowBrowserExperimentalFeatures": true
+        },
+        "canAllowCascadeInBackground": true,
+        "browserEnabled": true
+      },
+      "availablePromptCredits": 500,
+      "availableFlowCredits": 100
+    },
+    "cascadeModelConfigData": {
+      "clientModelConfigs": [
+        {
+          "label": "Gemini 4 Argon (Medium)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M418"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-11-21T16:54:29Z"
+          },
+          "tagTitle": "New",
+          "modelId": "[redacted]"
+        },
+        {
+          "label": "Gemini 4 Argon (High)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M417"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-11-21T16:54:29Z"
+          },
+          "tagTitle": "New",
+          "modelId": "[redacted]"
+        },
+        {
+          "label": "Gemini 4 Argon (Low)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M419"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-11-21T16:54:29Z"
+          },
+          "tagTitle": "New",
+          "modelId": "[redacted]"
+        },
+        {
+          "label": "Gemini 4 Hydrogen (High)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M525"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-11-14T21:54:29Z"
+          },
+          "tagTitle": "New",
+          "modelId": "[redacted]"
+        },
+        {
+          "label": "Gemini 4 Hydrogen (XHigh)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M528"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-11-14T21:54:29Z"
+          },
+          "tagTitle": "New",
+          "modelId": "[redacted]"
+        },
+        {
+          "label": "Gemini 4 Hydrogen (Medium)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M526"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-11-14T21:54:29Z"
+          },
+          "tagTitle": "New",
+          "modelId": "[redacted]"
+        },
+        {
+          "label": "Gemini 4 Hydrogen (Low)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M527"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-11-14T21:54:29Z"
+          },
+          "tagTitle": "New",
+          "modelId": "[redacted]"
+        },
+        {
+          "label": "Gemini 3.8 Flash (High)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M318"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-11-14T21:54:29Z"
+          },
+          "modelId": "[redacted]"
+        },
+        {
+          "label": "Gemini 3.8 Flash (Medium)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M319"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-11-14T21:54:29Z"
+          },
+          "modelId": "[redacted]"
+        },
+        {
+          "label": "Gemini 3.8 Flash (Low)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M320"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-11-14T21:54:29Z"
+          },
+          "modelId": "[redacted]"
+        },
+        {
+          "label": "Claude Opus 5.5 (Low)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M400"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-11-14T21:54:29Z"
+          },
+          "tagTitle": "New",
+          "modelId": "[redacted]"
+        },
+        {
+          "label": "Claude Opus 5.5 (Medium)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M401"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-11-14T21:54:29Z"
+          },
+          "tagTitle": "New",
+          "modelId": "[redacted]"
+        },
+        {
+          "label": "Claude Opus 5.5 (High)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M402"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-11-14T21:54:29Z"
+          },
+          "tagTitle": "New",
+          "modelId": "[redacted]"
+        },
+        {
+          "label": "Claude Sonnet 5.5 (Low)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M403"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-11-14T21:54:29Z"
+          },
+          "tagTitle": "New",
+          "modelId": "[redacted]"
+        },
+        {
+          "label": "Claude Sonnet 5.5 (Medium)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M404"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-11-14T21:54:29Z"
+          },
+          "tagTitle": "New",
+          "modelId": "[redacted]"
+        },
+        {
+          "label": "Claude Sonnet 5.5 (High)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M405"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-11-14T21:54:29Z"
+          },
+          "tagTitle": "New",
+          "modelId": "[redacted]"
+        },
+        {
+          "label": "GPT-OSS 120B (Medium)",
+          "modelOrAlias": {
+            "model": "MODEL_OPENAI_GPT_OSS_120B_MEDIUM"
+          },
+          "isRecommended": true,
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-11-14T21:54:29Z"
+          },
+          "tagTitle": "Notice",
+          "tagDescription": "[redacted]",
+          "modelId": "[redacted]"
+        },
+        {
+          "label": "Gemini 4 Carbon",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M670"
+          },
+          "disabled": true,
+          "supportsImages": true,
+          "isRecommended": true,
+          "quotaInfo": {},
+          "tagTitle": "Unavailable",
+          "tagDescription": "[redacted]",
+          "modelId": "[redacted]"
+        }
+      ],
+      "clientModelSorts": [
+        {
+          "name": "[redacted]",
+          "groups": [
+            {
+              "modelLabels": [
+                "Gemini 4 Argon (Medium)",
+                "Gemini 4 Argon (High)",
+                "Gemini 4 Argon (Low)",
+                "Gemini 4 Hydrogen (High)",
+                "Gemini 4 Hydrogen (XHigh)",
+                "Gemini 4 Hydrogen (Medium)",
+                "Gemini 4 Hydrogen (Low)",
+                "Gemini 3.8 Flash (High)",
+                "Gemini 3.8 Flash (Medium)",
+                "Gemini 3.8 Flash (Low)",
+                "Claude Opus 5.5 (Low)",
+                "Claude Opus 5.5 (Medium)",
+                "Claude Opus 5.5 (High)",
+                "Claude Sonnet 5.5 (Low)",
+                "Claude Sonnet 5.5 (Medium)",
+                "Claude Sonnet 5.5 (High)",
+                "GPT-OSS 120B (Medium)",
+                "Gemini 4 Carbon"
+              ]
+            }
+          ]
+        }
+      ],
+      "defaultOverrideModelConfig": {
+        "modelOrAlias": {
+          "model": "MODEL_PLACEHOLDER_M418"
+        }
+      }
+    },
+    "acceptedLatestTermsOfService": true,
+    "userTier": {
+      "id": "[redacted]",
+      "name": "[redacted]",
+      "description": "Google AI Pro",
+      "upgradeSubscriptionUri": "[redacted]",
+      "upgradeSubscriptionText": "[redacted]",
+      "availableCredits": [
+        {
+          "creditType": "GOOGLE_ONE_AI",
+          "minimumCreditAmountForUsage": "50"
+        }
+      ]
+    },
+    "profilePictureUrl": "[redacted]"
+  }
+}

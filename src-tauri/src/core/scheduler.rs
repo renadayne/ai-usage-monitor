@@ -112,10 +112,19 @@ pub fn apply_quota(
     now: DateTime<Utc>,
 ) {
     match result {
+        Ok(info) if info.stale => {
+            // Keep the last numbers; `fetched_at` keeps saying how old they are.
+            snapshot.health = if snapshot.windows.is_empty() {
+                Health::Ok
+            } else {
+                Health::Stale {
+                    since: snapshot.fetched_at,
+                }
+            };
+            snapshot.note = info.note;
+        }
         Ok(info) => {
-            if !(info.keep_previous_windows && info.windows.is_empty()) {
-                snapshot.windows = info.windows;
-            }
+            snapshot.windows = info.windows;
             if info.plan.is_some() {
                 snapshot.plan = info.plan;
             }
@@ -343,7 +352,7 @@ async fn run_provider(provider: Arc<dyn Provider>, shared: Arc<Shared>, refresh:
             };
             next_quota = Instant::now() + delay;
 
-            let succeeded = result.is_ok();
+            let succeeded = matches!(&result, Ok(info) if !info.stale);
             let now = Utc::now();
             let retry_at = now + chrono::Duration::from_std(delay).unwrap_or_default();
             let changed =
@@ -464,6 +473,30 @@ mod tests {
         apply_quota(&mut snapshot, Err(ProviderError::NotInstalled), now, now);
         assert_eq!(snapshot.health, Health::NotInstalled);
         assert!(snapshot.windows.is_empty());
+    }
+
+    #[test]
+    fn stale_result_keeps_last_numbers() {
+        let earlier = Utc::now() - chrono::Duration::hours(2);
+        let now = Utc::now();
+        let stale = || {
+            Ok(QuotaInfo {
+                stale: true,
+                note: Some("closed".into()),
+                ..QuotaInfo::default()
+            })
+        };
+
+        let mut snapshot = ProviderSnapshot::empty(ProviderId::Antigravity, earlier);
+        apply_quota(&mut snapshot, stale(), now, now);
+        assert_eq!(snapshot.health, Health::Ok);
+
+        apply_quota(&mut snapshot, ok_quota(40.0), earlier, earlier);
+        apply_quota(&mut snapshot, stale(), now, now);
+        assert_eq!(snapshot.health, Health::Stale { since: earlier });
+        assert_eq!(snapshot.windows.len(), 1);
+        assert_eq!(snapshot.fetched_at, earlier);
+        assert_eq!(snapshot.note.as_deref(), Some("closed"));
     }
 
     #[test]
