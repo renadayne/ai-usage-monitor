@@ -1,0 +1,50 @@
+name: Release
+
+# Builds the Windows installer (NSIS, with the WebView2 bootstrapper) when a
+# version tag is pushed, and attaches it to a draft GitHub release.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  windows-installer:
+    runs-on: windows-latest
+    env:
+      CARGO_TERM_COLOR: never
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: AI Usage Monitor ${{ github.ref_name }}
+          releaseBody: |
+            Windows 10/11 (x64) installer.
+
+            The installer is not code-signed, so Windows SmartScreen will warn on first run.
+            See the README ("Installing") for what to expect.
+          releaseDraft: true
+          prerelease: false

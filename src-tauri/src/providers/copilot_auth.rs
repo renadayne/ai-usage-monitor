@@ -84,7 +84,15 @@ pub fn parse_token_poll(body: &str) -> PollOutcome {
         Some("slow_down") => PollOutcome::SlowDown,
         Some("expired_token") => PollOutcome::Failed("The code expired. Try again.".to_string()),
         Some("access_denied") => PollOutcome::Failed("Access was denied on GitHub.".to_string()),
-        Some(other) => PollOutcome::Failed(format!("GitHub refused the request ({other}).")),
+        Some(other) => {
+            // Only echo a short, plain error code; never arbitrary response text.
+            let code: String = other
+                .chars()
+                .filter(|c| c.is_ascii_alphanumeric() || *c == '_')
+                .take(40)
+                .collect();
+            PollOutcome::Failed(format!("GitHub refused the request ({code})."))
+        }
         None => PollOutcome::Failed("GitHub sent an unexpected answer.".to_string()),
     }
 }

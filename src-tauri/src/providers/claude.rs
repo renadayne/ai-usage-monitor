@@ -5,7 +5,8 @@
 //! could invalidate Claude Code's own session.
 
 use std::path::{Path, PathBuf};
-use std::time::Duration;
+use std::sync::{Arc, Mutex};
+use std::time::{Duration, SystemTime};
 
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
@@ -202,8 +203,19 @@ pub fn parse_assistant_line(line: &str) -> Option<(String, Option<DateTime<Utc>>
     ))
 }
 
+type LastTurn = Option<(String, Option<DateTime<Utc>>)>;
+
+/// Result of the last log scan, reused while the newest log file is unchanged
+/// so an idle machine does not re-read (possibly huge) logs every few seconds.
+struct TurnCache {
+    path: PathBuf,
+    modified: SystemTime,
+    turn: LastTurn,
+}
+
 pub struct ClaudeProvider {
     ctx: ProviderContext,
+    turn_cache: Arc<Mutex<Option<TurnCache>>>,
 }
 
 struct LocalState {
@@ -213,7 +225,10 @@ struct LocalState {
 
 impl ClaudeProvider {
     pub fn new(ctx: ProviderContext) -> Self {
-        Self { ctx }
+        Self {
+            ctx,
+            turn_cache: Arc::new(Mutex::new(None)),
+        }
     }
 
     fn locate(ctx: &ProviderContext) -> Option<LocalState> {
@@ -223,7 +238,23 @@ impl ClaudeProvider {
         })
     }
 
-    fn detect_blocking(ctx: &ProviderContext) -> ActivityInfo {
+    fn last_turn(cache: &Mutex<Option<TurnCache>>, path: &Path, modified: SystemTime) -> LastTurn {
+        let mut cache = cache.lock().unwrap_or_else(|e| e.into_inner());
+        if let Some(cached) = cache.as_ref() {
+            if cached.path == path && cached.modified == modified {
+                return cached.turn.clone();
+            }
+        }
+        let turn = tail::find_last(path, parse_assistant_line);
+        *cache = Some(TurnCache {
+            path: path.to_path_buf(),
+            modified,
+            turn: turn.clone(),
+        });
+        turn
+    }
+
+    fn detect_blocking(ctx: &ProviderContext, cache: &Mutex<Option<TurnCache>>) -> ActivityInfo {
         let Some(local) = Self::locate(ctx) else {
             return ActivityInfo::new(Activity::NotRunning);
         };
@@ -234,7 +265,7 @@ impl ClaudeProvider {
 
         let last_turn = newest
             .as_ref()
-            .and_then(|(path, _)| tail::find_last(path, parse_assistant_line));
+            .and_then(|(path, modified)| Self::last_turn(cache, path, *modified));
         let (current_model, turn_time) = match last_turn {
             Some((model, time)) => (Some(model), time),
             None => (None, None),
@@ -297,7 +328,8 @@ impl Provider for ClaudeProvider {
 
     async fn detect_activity(&self) -> ActivityInfo {
         let ctx = self.ctx.clone();
-        tokio::task::spawn_blocking(move || Self::detect_blocking(&ctx))
+        let cache = Arc::clone(&self.turn_cache);
+        tokio::task::spawn_blocking(move || Self::detect_blocking(&ctx, &cache))
             .await
             .unwrap_or_else(|_| ActivityInfo::unknown())
     }
@@ -478,6 +510,24 @@ mod tests {
             parse_assistant_line(r#"{"type":"assistant","message":{"model":"claude-x"}}"#).unwrap();
         assert_eq!(model, "claude-x");
         assert_eq!(time, None);
+    }
+
+    #[test]
+    fn log_is_only_rescanned_when_it_changes() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("session.jsonl");
+        std::fs::write(&path, SESSION).unwrap();
+        let modified = std::fs::metadata(&path).unwrap().modified().unwrap();
+        let cache = Mutex::new(None);
+
+        let first = ClaudeProvider::last_turn(&cache, &path, modified);
+        assert!(first.is_some());
+        // Same mtime: served from the cache even though the file is gone.
+        std::fs::remove_file(&path).unwrap();
+        assert_eq!(ClaudeProvider::last_turn(&cache, &path, modified), first);
+        // New mtime: scanned again (and the file no longer exists).
+        let later = modified + Duration::from_secs(5);
+        assert_eq!(ClaudeProvider::last_turn(&cache, &path, later), None);
     }
 
     #[test]

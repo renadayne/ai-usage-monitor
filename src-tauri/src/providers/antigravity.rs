@@ -7,6 +7,7 @@
 //! memory and sent to `127.0.0.1` only. Certificate checks are disabled on a
 //! dedicated client that can talk to nothing but loopback.
 
+use std::path::PathBuf;
 use std::sync::Mutex;
 use std::time::Duration;
 
@@ -30,6 +31,26 @@ const ACTIVE_WINDOW_SECS: i64 = 5 * 60;
 const NOTE_CLOSED: &str = "Antigravity is not running. Showing the last known numbers.";
 const REQUEST_BODY: &str =
     r#"{"metadata":{"ideName":"antigravity","extensionName":"antigravity","locale":"en"}}"#;
+
+/// Usual install locations, used to tell "closed" from "not installed".
+fn install_candidates() -> Vec<PathBuf> {
+    let mut candidates = Vec::new();
+    for (variable, tail) in [
+        ("LOCALAPPDATA", "Programs/Antigravity/Antigravity.exe"),
+        ("ProgramFiles", "Antigravity/Antigravity.exe"),
+        ("USERPROFILE", ".gemini/antigravity"),
+    ] {
+        if let Some(base) = std::env::var_os(variable) {
+            candidates.push(PathBuf::from(base).join(tail));
+        }
+    }
+    candidates
+}
+
+/// True when any of the given paths exists.
+pub fn any_exists(paths: &[PathBuf]) -> bool {
+    paths.iter().any(|path| path.exists())
+}
 
 /// Value of a command line flag; accepts `--flag VALUE` and `--flag=VALUE`.
 pub fn flag_value(args: &[String], name: &str) -> Option<String> {
@@ -472,6 +493,12 @@ impl Provider for AntigravityProvider {
         let targets: Vec<ServerTarget> = servers.iter().filter_map(server_target).collect();
         if targets.is_empty() {
             self.state().endpoint = None;
+            let app_running = tokio::task::block_in_place(|| {
+                self.ctx.processes.is_running(ToolKind::Antigravity)
+            });
+            if !app_running && !any_exists(&install_candidates()) {
+                return Err(ProviderError::NotInstalled);
+            }
             return Ok(QuotaInfo {
                 stale: true,
                 note: Some(NOTE_CLOSED.to_string()),
@@ -678,6 +705,15 @@ mod tests {
         assert_eq!(windows[1].used_percent, Some(90.0));
         assert!(parse_command_model_configs(r#"{"code":"unimplemented"}"#).is_none());
         assert!(parse_user_status(r#"{"other":1}"#).is_none());
+    }
+
+    #[test]
+    fn install_detection() {
+        let dir = tempfile::tempdir().unwrap();
+        let missing = dir.path().join("nope.exe");
+        assert!(!any_exists(&[missing.clone()]));
+        assert!(any_exists(&[missing, dir.path().to_path_buf()]));
+        assert!(!any_exists(&[]));
     }
 
     #[test]
