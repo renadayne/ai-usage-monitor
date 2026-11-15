@@ -711,7 +711,7 @@ mod tests {
     fn install_detection() {
         let dir = tempfile::tempdir().unwrap();
         let missing = dir.path().join("nope.exe");
-        assert!(!any_exists(&[missing.clone()]));
+        assert!(!any_exists(std::slice::from_ref(&missing)));
         assert!(any_exists(&[missing, dir.path().to_path_buf()]));
         assert!(!any_exists(&[]));
     }
