@@ -1,7 +1,7 @@
 name: Release
 
 # Builds the Windows installer (NSIS, with the WebView2 bootstrapper) when a
-# version tag is pushed, and attaches it to a draft GitHub release.
+# version tag is pushed, and attaches it to a GitHub release.
 on:
   push:
     tags: ["v*"]
@@ -46,5 +46,5 @@ jobs:
 
             The installer is not code-signed, so Windows SmartScreen will warn on first run.
             See the README ("Installing") for what to expect.
-          releaseDraft: true
+          releaseDraft: false
           prerelease: false

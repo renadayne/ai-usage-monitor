@@ -148,7 +148,7 @@ cd src-tauri && cargo fmt --check && cargo clippy --all-targets -- -D warnings &
 - **Smart App Control**: nếu đang bật, Windows chặn mọi file thực thi chưa ký do `cargo` build ra
   (build script, `cargo clippy`, chính app), nên không build được Rust trên máy đó. Phần Rust của
   repo này được kiểm tra bằng GitHub Actions (`.github/workflows/ci.yml`).
-- Phát hành: push tag `v*` → `.github/workflows/release.yml` build installer NSIS và tạo **draft**
+- Phát hành: push tag `v*` → `.github/workflows/release.yml` build installer NSIS và tạo
   release.
 
 ## License
